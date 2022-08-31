@@ -53,3 +53,11 @@
     width: 100vw;
     height: 1200px;
 }
+.btn_validate:before{
+    content:'Visualizar PDF'
+}
+@media (max-width: 1025px) {
+    .btn_validate:before{
+        content:'Finalizar'
+    }
+ }

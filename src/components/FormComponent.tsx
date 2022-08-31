@@ -196,8 +196,7 @@ export default function FormComponent() {
               </div>
             </div>
             <div className={styles.btn_wrapper}>
-              <button className={styles.btn} type="submit">
-                Visualizar PDF
+              <button className={styles.btn+' '+styles.btn_validate} type="submit">
               </button>
               <button type="reset" className={styles.btn}>Limpar</button>
             </div>
