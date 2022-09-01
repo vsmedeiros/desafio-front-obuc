@@ -24,14 +24,14 @@ const schema = Yup.object().shape({
 
 export default function FormComponent() {
   const initialValues: MyFormValues = {
-    position: "",
-    salary: "",
-    responsability: "",
-    benefit: "",
-    step: "",
-    skill: "",
-    experience: "",
-    contact: "",
+    position: "Padeiro",
+    salary: "100",
+    responsability: "Fazer pão, lavar maquinário.",
+    benefit: "Plano de saúde",
+    step: "Entrevista, contratação",
+    skill: "Conhecer ingredientes",
+    experience: "2 anos experiências",
+    contact: "vitorsimedeiros@gmail.com",
   };
   const [jobinfo, setJobinfo] = useState<MyFormValues>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
