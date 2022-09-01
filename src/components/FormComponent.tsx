@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Form.module.css";
-import { Formik, Form, Field} from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import PdfFile from "./PdfFile";
 import { MyFormValues } from "../interfaces/MyFormValues";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-
+import { Select, TextField, MenuItem } from "@material-ui/core";
 const reqMessage = "Preencha esse campo";
 const schema = Yup.object().shape({
   position: Yup.string().required(reqMessage),
   salary: Yup.string()
     .matches(/^[0-9]+$/, "Digitar somente números!")
-    .required(reqMessage).test('start-zero', 'Iniciar com número diferente de 0!', val => !val?.startsWith("0")),
+    .required(reqMessage)
+    .test(
+      "start-zero",
+      "Iniciar com número diferente de 0!",
+      (val) => !val?.startsWith("0")
+    ),
   responsability: Yup.string().required(reqMessage),
   benefit: Yup.string().required(reqMessage),
   step: Yup.string().required(reqMessage),
@@ -23,41 +28,78 @@ const schema = Yup.object().shape({
 });
 
 export default function FormComponent() {
-  const initialValues: MyFormValues = {
-    position: "Padeiro",
-    salary: "100",
-    responsability: "Fazer pão, lavar maquinário.",
-    benefit: "Plano de saúde",
-    step: "Entrevista, contratação",
-    skill: "Conhecer ingredientes",
-    experience: "2 anos experiências",
-    contact: "vitorsimedeiros@gmail.com",
+  const initialValues = {
+    position: "",
+    salary: "",
+    responsability: "",
+    benefit: "",
+    step: "",
+    skill: "",
+    experience: "",
+    contact: "",
   };
-  const [jobinfo, setJobinfo] = useState<MyFormValues>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [jobinfo, setJobInfo] = useState<MyFormValues>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {});
+  const save = (data: MyFormValues) => {
+    localStorage.setItem("" + data.position, JSON.stringify(data));
+  };
+  
   return (
     <div className={styles.form}>
+      {isSubmitting ? (
+        <PDFViewer className={styles.pdfviewer}>
+          <PdfFile {...jobinfo} />
+        </PDFViewer>
+      ) : (
+        <></>
+      )}
       <Formik
-        
+        enableReinitialize={true}
         validateOnChange={false}
         validateOnBlur={false}
         validationSchema={schema}
-        initialValues={initialValues}
+        initialValues={jobinfo||initialValues}
         onSubmit={(data) => {
-          setJobinfo({ ...data });
+          setJobInfo({ ...data });
           console.log(JSON.stringify(data));
+          save(data);
           setIsSubmitting(true);
         }}
       >
-        {({ errors, handleChange, handleBlur, isValid }) => (
-          
+        {({ errors, handleChange, resetForm }) => (
           <Form
-          onChange={(e: any) => {
-            handleChange(e);
-            setIsSubmitting(false);
-          }}
+            onChange={(e: any) => {
+              handleChange(e);
+              setIsSubmitting(false);
+            }}
           >
+            <div className={styles.form_row}>
+              <div className={styles.form_input_select}>
+                <label htmlFor="position" className={styles.input_label}>
+                  Modelos de vagas:
+                </label>
+                <Field
+                  id="position"
+                  name="position"
+                  type="select"
+                  as={Select}
+                  className={styles.form_input}
+                  onChange={(e: any) => {
+                    handleChange(e);
+                    const job = localStorage.getItem(e.target.value);
+                    setJobInfo(JSON.parse(job ? job : ""));
+                    console.log(job);
+                  }}
+                >
+                  <MenuItem value="">Escolha um template</MenuItem>
+                  {Object.keys(localStorage).map((item) => {
+                    return <MenuItem value={item}>{item}</MenuItem>;
+                  })}
+                </Field>
+              </div>
+            </div>
             <div className={styles.form_row}>
               <div className={styles.form_group}>
                 <label htmlFor="position" className={styles.input_label}>
@@ -69,6 +111,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder=" Ex.: Padeiro."
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.position && (
                   <div className={styles.error_message}>{errors.position}</div>
@@ -83,6 +126,7 @@ export default function FormComponent() {
                   name="salary"
                   placeholder="Ex.: 1000"
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.salary && (
                   <div className={styles.error_message}>{errors.salary}</div>
@@ -100,6 +144,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: Limpar o equipamento e ferramentas de cozinha antes de usar."
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.responsability && (
                   <div className={styles.error_message}>
@@ -119,6 +164,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: Assistência médica e odontológica, convênio com empresas parceiras."
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.benefit && (
                   <div className={styles.error_message}>{errors.benefit}</div>
@@ -136,6 +182,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: Realização da entrevista de emprego, Verificação dos dados informados, Anúncio do resultado."
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.step && (
                   <div className={styles.error_message}>{errors.step}</div>
@@ -153,6 +200,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: Gerenciamento de Tempo, Destreza, Atenção aos Detalhes, Conhecimento de Produtos e Ética de Trabalho."
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.skill && (
                   <div className={styles.error_message}>{errors.skill}</div>
@@ -170,6 +218,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: 2 anos experiência"
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.experience && (
                   <div className={styles.error_message}>
@@ -189,6 +238,7 @@ export default function FormComponent() {
                   type="text"
                   placeholder="Ex.: donamaria@gmail.com"
                   className={styles.form_input}
+                  as={TextField}
                 />
                 {errors.contact && (
                   <div className={styles.error_message}>{errors.contact}</div>
@@ -196,14 +246,18 @@ export default function FormComponent() {
               </div>
             </div>
             <div className={styles.btn_wrapper}>
-              <button className={styles.btn+' '+styles.btn_validate} type="submit">
+              <button
+                className={styles.btn + " " + styles.btn_validate}
+                type="submit"
+              ></button>
+              <button type="reset" onClick={() => window.location.reload()} className={styles.btn}>
+                Limpar
               </button>
-              <button type="reset" className={styles.btn}>Limpar</button>
             </div>
           </Form>
         )}
       </Formik>
-      {isSubmitting? (
+      {isSubmitting ? (
         <PDFDownloadLink
           document={<PdfFile {...jobinfo} />}
           fileName={"Vaga.pdf"}
@@ -219,9 +273,6 @@ export default function FormComponent() {
       ) : (
         <></>
       )}
-      {isSubmitting ? (<PDFViewer className={styles.pdfviewer}>
-        <PdfFile {...jobinfo} />
-      </PDFViewer>) : (<></>)}
     </div>
   );
 }

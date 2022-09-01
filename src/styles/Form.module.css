@@ -27,6 +27,12 @@
 .form_input{
     margin-top: 5px;
 }
+.form_input_select{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-right: 20px;
+}
 .input_label{
     font-weight: bold;
 }
