@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState} from "react";
 import styles from "../styles/Form.module.css";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -6,10 +6,11 @@ import PdfFile from "./PdfFile";
 import { MyFormValues } from "../interfaces/MyFormValues";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { Select, TextField, MenuItem } from "@material-ui/core";
-const reqMessage = "Preencha esse campo";
+
+const reqMessage = "Preencha esse campo!";
 const schema = Yup.object().shape({
-  position: Yup.string().required(reqMessage),
-  salary: Yup.string()
+  position: Yup.string().trim().required(reqMessage),
+  salary: Yup.string().trim()
     .matches(/^[0-9]+$/, "Digitar somente números!")
     .required(reqMessage)
     .test(
@@ -17,15 +18,18 @@ const schema = Yup.object().shape({
       "Iniciar com número diferente de 0!",
       (val) => !val?.startsWith("0")
     ),
-  responsability: Yup.string().required(reqMessage),
-  benefit: Yup.string().required(reqMessage),
-  step: Yup.string().required(reqMessage),
-  skill: Yup.string().required(reqMessage),
-  experience: Yup.string().required(reqMessage),
-  contact: Yup.string()
+  responsability: Yup.string().trim().required(reqMessage),
+  benefit: Yup.string().trim().required(reqMessage),
+  step: Yup.string().trim().required(reqMessage),
+  skill: Yup.string().trim().required(reqMessage),
+  experience: Yup.string().trim().required(reqMessage),
+  contact: Yup.string().trim()
     .email("O contato deve estar no formato de email!")
     .required(reqMessage),
 });
+const save = (data: MyFormValues) => {
+  localStorage.setItem("" + data.position, JSON.stringify(data));
+};
 
 export default function FormComponent() {
   const initialValues = {
@@ -38,19 +42,22 @@ export default function FormComponent() {
     experience: "",
     contact: "",
   };
-
-  const [jobinfo, setJobInfo] = useState<MyFormValues>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  useEffect(() => {});
-  const save = (data: MyFormValues) => {
-    localStorage.setItem("" + data.position, JSON.stringify(data));
+  const [jobInfo, setJobInfo] = useState<MyFormValues>({});
+  const [modal, setModal] = useState(false);
+  const toggleModal = () => {
+    setModal(!modal);
   };
-  
+  if(modal) {
+    document.body.classList.add(styles.active_modal)
+  } else {
+    document.body.classList.remove(styles.active_modal)
+  }
   return (
     <div className={styles.form}>
       {isSubmitting ? (
         <PDFViewer className={styles.pdfviewer}>
-          <PdfFile {...jobinfo} />
+          <PdfFile {...jobInfo} />
         </PDFViewer>
       ) : (
         <></>
@@ -60,15 +67,14 @@ export default function FormComponent() {
         validateOnChange={false}
         validateOnBlur={false}
         validationSchema={schema}
-        initialValues={jobinfo||initialValues}
+        initialValues={jobInfo || initialValues}
         onSubmit={(data) => {
           setJobInfo({ ...data });
           console.log(JSON.stringify(data));
-          save(data);
           setIsSubmitting(true);
         }}
       >
-        {({ errors, handleChange, resetForm }) => (
+        {({ errors, handleChange, handleBlur}) => (
           <Form
             onChange={(e: any) => {
               handleChange(e);
@@ -86,12 +92,22 @@ export default function FormComponent() {
                   type="select"
                   as={Select}
                   className={styles.form_input}
-                  onChange={(e: any) => {
-                    handleChange(e);
+                  onSelect={(e: any) => {
+                    console.log("isTouched")
                     const job = localStorage.getItem(e.target.value);
+                    setJobInfo({})
                     setJobInfo(JSON.parse(job ? job : ""));
-                    console.log(job);
+                    handleChange(e);
                   }}
+                  
+                  onChange={(e: any) => {
+                    console.log("isTouched")
+                    const job = localStorage.getItem(e.target.value);
+                    setJobInfo({})
+                    setJobInfo(JSON.parse(job ? job : ""));
+                    handleChange(e);
+                  }}
+                  
                 >
                   <MenuItem value="">Escolha um template</MenuItem>
                   {Object.keys(localStorage).map((item) => {
@@ -250,16 +266,24 @@ export default function FormComponent() {
                 className={styles.btn + " " + styles.btn_validate}
                 type="submit"
               ></button>
-              <button type="reset" onClick={() => window.location.reload()} className={styles.btn}>
+              {isSubmitting && (<button
+                className={styles.btn}
+                type="submit" onClick={() => { toggleModal() }}
+              >Salvar modelo</button>)}
+              <button
+                type="reset"
+                onClick={() => window.location.reload()}
+                className={styles.btn}
+              >
                 Limpar
               </button>
             </div>
           </Form>
         )}
       </Formik>
-      {isSubmitting ? (
+      {isSubmitting && (
         <PDFDownloadLink
-          document={<PdfFile {...jobinfo} />}
+          document={<PdfFile {...jobInfo} />}
           fileName={"Vaga.pdf"}
         >
           {({ loading }) =>
@@ -270,9 +294,20 @@ export default function FormComponent() {
             )
           }
         </PDFDownloadLink>
-      ) : (
-        <></>
+      )}
+      {modal && (
+        <div className={styles.modal}>
+          <div className={styles.overlay}>
+            <div className={styles.modal_content}>
+              <h2>Deseja salvar esse modelo?</h2>
+              <button className={styles.btn_modal} onClick={() => { save(jobInfo); toggleModal() }}>SIM</button>
+              <button className={styles.btn_modal_no} onClick={()=>{toggleModal()}}>NÃO</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 }
+
+
