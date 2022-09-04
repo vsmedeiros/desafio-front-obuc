@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import styles from "../styles/Form.module.css";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -10,7 +10,8 @@ import { Select, TextField, MenuItem } from "@material-ui/core";
 const reqMessage = "Preencha esse campo!";
 const schema = Yup.object().shape({
   position: Yup.string().trim().required(reqMessage),
-  salary: Yup.string().trim()
+  salary: Yup.string()
+    .trim()
     .matches(/^[0-9]+$/, "Digitar somente números!")
     .required(reqMessage)
     .test(
@@ -23,7 +24,8 @@ const schema = Yup.object().shape({
   step: Yup.string().trim().required(reqMessage),
   skill: Yup.string().trim().required(reqMessage),
   experience: Yup.string().trim().required(reqMessage),
-  contact: Yup.string().trim()
+  contact: Yup.string()
+    .trim()
     .email("O contato deve estar no formato de email!")
     .required(reqMessage),
 });
@@ -48,20 +50,13 @@ export default function FormComponent() {
   const toggleModal = () => {
     setModal(!modal);
   };
-  if(modal) {
-    document.body.classList.add(styles.active_modal)
+  if (modal) {
+    document.body.classList.add(styles.active_modal);
   } else {
-    document.body.classList.remove(styles.active_modal)
+    document.body.classList.remove(styles.active_modal);
   }
   return (
     <div className={styles.form}>
-      {isSubmitting ? (
-        <PDFViewer className={styles.pdfviewer}>
-          <PdfFile {...jobInfo} />
-        </PDFViewer>
-      ) : (
-        <></>
-      )}
       <Formik
         enableReinitialize={true}
         validateOnChange={false}
@@ -70,11 +65,10 @@ export default function FormComponent() {
         initialValues={jobInfo || initialValues}
         onSubmit={(data) => {
           setJobInfo({ ...data });
-          console.log(JSON.stringify(data));
           setIsSubmitting(true);
         }}
       >
-        {({ errors, handleChange, handleBlur}) => (
+        {({ errors, handleChange, handleBlur }) => (
           <Form
             onChange={(e: any) => {
               handleChange(e);
@@ -92,22 +86,12 @@ export default function FormComponent() {
                   type="select"
                   as={Select}
                   className={styles.form_input}
-                  onSelect={(e: any) => {
-                    console.log("isTouched")
-                    const job = localStorage.getItem(e.target.value);
-                    setJobInfo({})
-                    setJobInfo(JSON.parse(job ? job : ""));
-                    handleChange(e);
-                  }}
-                  
                   onChange={(e: any) => {
-                    console.log("isTouched")
                     const job = localStorage.getItem(e.target.value);
-                    setJobInfo({})
+                    setJobInfo({});
                     setJobInfo(JSON.parse(job ? job : ""));
                     handleChange(e);
                   }}
-                  
                 >
                   <MenuItem value="">Escolha um template</MenuItem>
                   {Object.keys(localStorage).map((item) => {
@@ -262,14 +246,10 @@ export default function FormComponent() {
               </div>
             </div>
             <div className={styles.btn_wrapper}>
-              <button
-                className={styles.btn + " " + styles.btn_validate}
-                type="submit"
-              ></button>
-              {isSubmitting && (<button
-                className={styles.btn}
-                type="submit" onClick={() => { toggleModal() }}
-              >Salvar modelo</button>)}
+              <button className={styles.btn} type="submit">
+                Validar
+              </button>
+
               <button
                 type="reset"
                 onClick={() => window.location.reload()}
@@ -277,31 +257,67 @@ export default function FormComponent() {
               >
                 Limpar
               </button>
+              {isSubmitting && (
+                <PDFDownloadLink
+                  document={<PdfFile {...jobInfo} />}
+                  fileName={"Vaga.pdf"}
+                >
+                  {({ loading }) =>
+                    loading ? (
+                      <button className={styles.btn}>
+                        Carregando documento...
+                      </button>
+                    ) : (
+                      <button className={styles.btn}>Baixar</button>
+                    )
+                  }
+                </PDFDownloadLink>
+              )}
+              {isSubmitting && (
+                <button
+                  className={styles.btn}
+                  type="submit"
+                  onClick={() => {
+                    toggleModal();
+                  }}
+                >
+                  Salvar
+                </button>
+              )}
             </div>
           </Form>
         )}
       </Formik>
-      {isSubmitting && (
-        <PDFDownloadLink
-          document={<PdfFile {...jobInfo} />}
-          fileName={"Vaga.pdf"}
-        >
-          {({ loading }) =>
-            loading ? (
-              <button className={styles.btn}>Carregando documento...</button>
-            ) : (
-              <button className={styles.btn}>Baixar</button>
-            )
-          }
-        </PDFDownloadLink>
+      <div className={styles.btn_wrapper}></div>
+      {isSubmitting && window.innerWidth > 790 ? (
+        <PDFViewer className={styles.pdfviewer}>
+          <PdfFile {...jobInfo} />
+        </PDFViewer>
+      ) : (
+        <></>
       )}
       {modal && (
         <div className={styles.modal}>
           <div className={styles.overlay}>
             <div className={styles.modal_content}>
               <h2>Deseja salvar esse modelo?</h2>
-              <button className={styles.btn_modal} onClick={() => { save(jobInfo); toggleModal() }}>SIM</button>
-              <button className={styles.btn_modal_no} onClick={()=>{toggleModal()}}>NÃO</button>
+              <button
+                className={styles.btn_modal}
+                onClick={() => {
+                  save(jobInfo);
+                  toggleModal();
+                }}
+              >
+                SIM
+              </button>
+              <button
+                className={styles.btn_modal_no}
+                onClick={() => {
+                  toggleModal();
+                }}
+              >
+                NÃO
+              </button>
             </div>
           </div>
         </div>
@@ -309,5 +325,3 @@ export default function FormComponent() {
     </div>
   );
 }
-
-
