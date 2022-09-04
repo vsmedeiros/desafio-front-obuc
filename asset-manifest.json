@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/desafio-front-obuc/static/css/main.1826cd92.css",
-    "main.js": "/desafio-front-obuc/static/js/main.6b01ccc6.js",
+    "main.js": "/desafio-front-obuc/static/js/main.d913405c.js",
     "static/media/Dona Maria Cupcake.png": "/desafio-front-obuc/static/media/Dona Maria Cupcake.b8c3d1a92b9d97656624.png",
     "static/media/Dona-Maria.png": "/desafio-front-obuc/static/media/Dona-Maria.a8ecc755263caa9fdc03.png",
     "index.html": "/desafio-front-obuc/index.html",
     "main.1826cd92.css.map": "/desafio-front-obuc/static/css/main.1826cd92.css.map",
-    "main.6b01ccc6.js.map": "/desafio-front-obuc/static/js/main.6b01ccc6.js.map"
+    "main.d913405c.js.map": "/desafio-front-obuc/static/js/main.d913405c.js.map"
   },
   "entrypoints": [
     "static/css/main.1826cd92.css",
-    "static/js/main.6b01ccc6.js"
+    "static/js/main.d913405c.js"
   ]
 }
