@@ -1,40 +1,22 @@
 import React, { useState } from "react";
 import styles from "../styles/Form.module.css";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import PdfFile from "./PdfFile";
 import { MyFormValues } from "../interfaces/MyFormValues";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer } from "@react-pdf/renderer";
 import { Select, TextField, MenuItem } from "@material-ui/core";
+import { schema } from "./YupValidation";
+import Modal from "./SaveModal";
+import PDFLink from "./PDFLink";
+import HomeButtons from "./HomeButtons";
+import SaveButton from "./SaveButton";
 
-const reqMessage = "Preencha esse campo!";
-const schema = Yup.object().shape({
-  position: Yup.string().trim().required(reqMessage),
-  salary: Yup.string()
-    .trim()
-    .matches(/^[0-9]+$/, "Digitar somente números!")
-    .required(reqMessage)
-    .test(
-      "start-zero",
-      "Iniciar com número diferente de 0!",
-      (val) => !val?.startsWith("0")
-    ),
-  responsability: Yup.string().trim().required(reqMessage),
-  benefit: Yup.string().trim().required(reqMessage),
-  step: Yup.string().trim().required(reqMessage),
-  skill: Yup.string().trim().required(reqMessage),
-  experience: Yup.string().trim().required(reqMessage),
-  contact: Yup.string()
-    .trim()
-    .email("O contato deve estar no formato de email!")
-    .required(reqMessage),
-});
 const save = (data: MyFormValues) => {
   localStorage.setItem("" + data.position, JSON.stringify(data));
 };
 
 export default function FormComponent() {
-  const initialValues = {
+  const initialValues: MyFormValues = {
     position: "",
     salary: "",
     responsability: "",
@@ -68,7 +50,7 @@ export default function FormComponent() {
           setIsSubmitting(true);
         }}
       >
-        {({ errors, handleChange, handleBlur }) => (
+        {({ errors, handleChange }) => (
           <Form
             onChange={(e: any) => {
               handleChange(e);
@@ -91,9 +73,12 @@ export default function FormComponent() {
                     setJobInfo({});
                     setJobInfo(JSON.parse(job ? job : ""));
                     handleChange(e);
+                    setIsSubmitting(false);
                   }}
                 >
-                  <MenuItem value="">Escolha um template</MenuItem>
+                  <MenuItem value="" disabled>
+                    Escolha um template
+                  </MenuItem>
                   {Object.keys(localStorage).map((item) => {
                     return <MenuItem value={item}>{item}</MenuItem>;
                   })}
@@ -246,81 +231,20 @@ export default function FormComponent() {
               </div>
             </div>
             <div className={styles.btn_wrapper}>
-              <button className={styles.btn} type="submit">
-                Validar
-              </button>
-
-              <button
-                type="reset"
-                onClick={() => window.location.reload()}
-                className={styles.btn}
-              >
-                Limpar
-              </button>
-              {isSubmitting && (
-                <PDFDownloadLink
-                  document={<PdfFile {...jobInfo} />}
-                  fileName={"Vaga.pdf"}
-                >
-                  {({ loading }) =>
-                    loading ? (
-                      <button className={styles.btn}>
-                        Carregando documento...
-                      </button>
-                    ) : (
-                      <button className={styles.btn}>Baixar</button>
-                    )
-                  }
-                </PDFDownloadLink>
-              )}
-              {isSubmitting && (
-                <button
-                  className={styles.btn}
-                  type="submit"
-                  onClick={() => {
-                    toggleModal();
-                  }}
-                >
-                  Salvar
-                </button>
-              )}
+              <HomeButtons />
+              {isSubmitting && <PDFLink jobInfo={jobInfo} />}
+              {isSubmitting && <SaveButton toggleModal={toggleModal} />}
             </div>
           </Form>
         )}
       </Formik>
-      <div className={styles.btn_wrapper}></div>
-      {isSubmitting && window.innerWidth > 790 ? (
+      {isSubmitting && window.innerWidth > 790 && (
         <PDFViewer className={styles.pdfviewer}>
           <PdfFile {...jobInfo} />
         </PDFViewer>
-      ) : (
-        <></>
       )}
       {modal && (
-        <div className={styles.modal}>
-          <div className={styles.overlay}>
-            <div className={styles.modal_content}>
-              <h2>Deseja salvar esse modelo?</h2>
-              <button
-                className={styles.btn_modal}
-                onClick={() => {
-                  save(jobInfo);
-                  toggleModal();
-                }}
-              >
-                SIM
-              </button>
-              <button
-                className={styles.btn_modal_no}
-                onClick={() => {
-                  toggleModal();
-                }}
-              >
-                NÃO
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal jobInfo={jobInfo} save={save} toggleModal={toggleModal} />
       )}
     </div>
   );
