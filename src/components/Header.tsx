@@ -6,6 +6,7 @@ export default function Header() {
         <div className={styles.header}>
             <img src={Logo} className={styles.header_logo} alt="donamarialogo"/>
             <h1 className={styles.header_title}>Formulário vaga confeitaria Dona Maria</h1>
+            <h2 className={styles.header_subtitle}>Preencha o formulário e valide para gerar o PDF.</h2>
         </div>
     )
 }
