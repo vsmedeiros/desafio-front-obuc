@@ -1,6 +1,6 @@
 # desafio-front-obuc
 
-Desafio Desenvolvedor Front-end Obuc
+# Desafio Desenvolvedor Front-end Obuc 💻
 
 Projeto criando com [Create React App](https://github.com/facebook/create-react-app).
 
