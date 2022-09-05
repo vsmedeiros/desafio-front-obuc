@@ -6,7 +6,8 @@ export default function HomeButtons(props: any) {
   return (
     <>
       <button className={styles.btn + " " + styles.btn_validate} type="submit">
-        Validar <FontAwesomeIcon icon={faCheck} />
+        Validar <FontAwesomeIcon icon={faCheck}
+        />
       </button>
 
       <button

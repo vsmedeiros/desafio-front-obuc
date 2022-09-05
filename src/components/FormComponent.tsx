@@ -29,6 +29,7 @@ export default function FormComponent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [jobInfo, setJobInfo] = useState<MyFormValues>({});
   const [modal, setModal] = useState(false);
+  const bottomRef = React.useRef<HTMLDivElement>(null);
   const toggleModal = () => {
     setModal(!modal);
   };
@@ -48,6 +49,7 @@ export default function FormComponent() {
         onSubmit={(data) => {
           setJobInfo({ ...data });
           setIsSubmitting(true);
+          setTimeout(()=>bottomRef.current?.scrollIntoView(), 1500);
         }}
       >
         {({ errors, handleChange }) => (
@@ -230,7 +232,7 @@ export default function FormComponent() {
                 )}
               </div>
             </div>
-            <div className={styles.btn_wrapper}>
+            <div className={styles.btn_wrapper} ref={bottomRef}>
               <HomeButtons />
               {isSubmitting && <PDFLink jobInfo={jobInfo} />}
               {isSubmitting && <SaveButton toggleModal={toggleModal} />}
@@ -238,10 +240,11 @@ export default function FormComponent() {
           </Form>
         )}
       </Formik>
-      {isSubmitting && window.innerWidth > 790 && (
-        <PDFViewer className={styles.pdfviewer}>
+      {isSubmitting && window.innerWidth > 790 && (<div ref={bottomRef}>
+        <PDFViewer className={styles.pdfviewer} >
           <PdfFile {...jobInfo} />
         </PDFViewer>
+        </div>
       )}
       {modal && (
         <Modal jobInfo={jobInfo} save={save} toggleModal={toggleModal} />

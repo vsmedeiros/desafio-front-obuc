@@ -7,7 +7,7 @@ export default function HomeButtons(props: any) {
     <>
       <button
         className={styles.btn}
-        type="submit"
+        type="button"
         onClick={() => {
           props.toggleModal();
         }}

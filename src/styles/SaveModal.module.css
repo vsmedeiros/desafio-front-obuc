@@ -62,3 +62,7 @@
 body.active_modal {
   overflow-y: hidden;
 }
+
+.swal2_popup {
+  font-family: Arial, Helvetica, sans-serif;
+}

@@ -9,17 +9,17 @@ export default function PDFLink(props: any) {
   return (
       <PDFDownloadLink
         document={<PdfFile {...props.jobInfo} />}
-        fileName={"Vaga.pdf"}
+        fileName={"Vaga "+props.jobInfo.position+".pdf"}
       >
         {({ loading }) =>
           loading ? (
-            <p className={styles.btn + " " + styles.btn_download}>
-              Carregando documento...
-            </p>
+            <div className={styles.btn + " " + styles.btn_download}>
+              Carregando...
+            </div>
           ) : (
-            <p className={styles.btn + " " + styles.btn_download}>
+            <div className={styles.btn + " " + styles.btn_download}>
               Baixar <FontAwesomeIcon icon={faFilePdf} />
-            </p>
+            </div>
           )
         }
       </PDFDownloadLink>

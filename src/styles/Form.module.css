@@ -62,8 +62,6 @@
   height: 1200px;
 }
 
-
-
 /* Small devices (tablets, 768px and up) */
 @media (max-width: 768px) {
   .form_input_select {
