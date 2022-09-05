@@ -72,7 +72,6 @@ export default function FormComponent() {
                   className={styles.form_input}
                   onChange={(e: any) => {
                     const job = localStorage.getItem(e.target.value);
-                    setJobInfo({});
                     setJobInfo(JSON.parse(job ? job : ""));
                     handleChange(e);
                     setIsSubmitting(false);
