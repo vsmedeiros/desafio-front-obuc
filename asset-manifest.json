@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/desafio-front-obuc/static/css/main.65e50c2c.css",
-    "main.js": "/desafio-front-obuc/static/js/main.eb3a5650.js",
-    "static/media/Dona Maria Cupcake.png": "/desafio-front-obuc/static/media/Dona Maria Cupcake.b8c3d1a92b9d97656624.png",
-    "static/media/Dona-Maria.png": "/desafio-front-obuc/static/media/Dona-Maria.a8ecc755263caa9fdc03.png",
-    "index.html": "/desafio-front-obuc/index.html",
-    "main.65e50c2c.css.map": "/desafio-front-obuc/static/css/main.65e50c2c.css.map",
-    "main.eb3a5650.js.map": "/desafio-front-obuc/static/js/main.eb3a5650.js.map"
+    "main.css": "/gerador-vagas/static/css/main.65e50c2c.css",
+    "main.js": "/gerador-vagas/static/js/main.c20448ad.js",
+    "static/media/Dona Maria Cupcake.png": "/gerador-vagas/static/media/Dona Maria Cupcake.b8c3d1a92b9d97656624.png",
+    "static/media/Dona-Maria.png": "/gerador-vagas/static/media/Dona-Maria.a8ecc755263caa9fdc03.png",
+    "index.html": "/gerador-vagas/index.html",
+    "main.65e50c2c.css.map": "/gerador-vagas/static/css/main.65e50c2c.css.map",
+    "main.c20448ad.js.map": "/gerador-vagas/static/js/main.c20448ad.js.map"
   },
   "entrypoints": [
     "static/css/main.65e50c2c.css",
-    "static/js/main.eb3a5650.js"
+    "static/js/main.c20448ad.js"
   ]
 }
